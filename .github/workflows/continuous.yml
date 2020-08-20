@@ -34,7 +34,7 @@ jobs:
         python3 -m python_appimage build app appimage -p ${{ matrix.version }}
         ls
         chmod +x pyappimage-x86_64.AppImage
-        pyappimage-x86_64.AppImage --appimage-extract
+        ./pyappimage-x86_64.AppImage --appimage-extract
         rm -r pyappimage-x86_64.AppImage
         wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
         chmod +x appimagetool-x86_64.AppImage
