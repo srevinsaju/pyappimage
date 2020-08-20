@@ -1,10 +1,10 @@
 [Desktop Entry]
 Name=pyappimage
-GenericName=PyAppImage
+GenericName=pyappimage
 Comment=Python app generated using PyAppImage
 Exec=pyappimage
-Icon=PyAppImage
+Icon=pyappimage
 Terminal=true
 Type=Application
 Categories=Development;
-StartupWMClass=PyAppImage
+StartupWMClass=pyappimage
