@@ -33,7 +33,7 @@ jobs:
         sed -i "s,pyappimage,$(realpath .),g" appimage/requirements.txt
         python3 -m python_appimage build app appimage -p ${{ matrix.version }}
         chmod +x *.AppImage
-        *.AppImage --appimage-extract
+        pyappimage*.AppImage --appimage-extract
         rm -r *.AppImage
         wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
         chmod +x appimagetool-x86_64.AppImage
