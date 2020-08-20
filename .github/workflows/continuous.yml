@@ -1,0 +1,63 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7', '3.8']
+        
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip3 install python-appimage
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Build AppImage using @niess python-appimage
+      run: |
+        python3 -m python_appimage build app appimage -p ${{ matrix.version }}
+        *.AppImage --appimage-extract
+        rm -r *.AppImage
+        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod +x appimagetool-x86_64.AppImage
+        ./appimagetool-x86_64.AppImage squashfs-root -n -u 'gh-releases-zsync|srevinsaju|pyappimage|continuous|pyappimage-${{ matrix.version }}*.AppImage.zsync' pyappimage-${{ matrix.version }}-x86_64.AppImage
+        mkdir dist
+        mv pyappimage*.AppImage* dist/.
+        
+
+    - name: Upload Appimage
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: pyappimage-continuous-x86_64.AppImage
+        path: 'dist/'
+
+  Release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v1
+      with:
+        name: pyappimage-continuous-x86_64.AppImage
+
+    - name: Release
+      uses: marvinpinto/action-automatic-releases@latest
+      if: github.ref == 'refs/heads/master'
+      with:
+        automatic_release_tag: continuous
+        title: Beta AppImage Release
+        prerelease: false
