@@ -32,6 +32,7 @@ jobs:
       run: |
         sed -i "s,pyappimage,$(realpath .),g" appimage/requirements.txt
         python3 -m python_appimage build app appimage -p ${{ matrix.version }}
+        ls
         chmod +x *.AppImage
         pyappimage*.AppImage --appimage-extract
         rm -r *.AppImage
