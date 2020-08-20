@@ -1,2 +1,3 @@
+https://github.com/srevinsaju/zap/archive/master.tar.gz
 PyInstaller
 pyappimage
