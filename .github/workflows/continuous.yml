@@ -32,12 +32,15 @@ jobs:
       run: |
         sed -i "s,pyappimage,$(realpath .),g" appimage/requirements.txt
         python3 -m python_appimage build app appimage -p ${{ matrix.version }}
+        chmod +x *.AppImage
         *.AppImage --appimage-extract
         rm -r *.AppImage
         wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
         chmod +x appimagetool-x86_64.AppImage
+        echo "Bundling AppImage Tool"
         ./appimagetool-x86_64.AppImage squashfs-root -n -u 'gh-releases-zsync|srevinsaju|pyappimage|continuous|pyappimage-${{ matrix.version }}*.AppImage.zsync' pyappimage-${{ matrix.version }}-x86_64.AppImage
         mkdir dist
+        echo "Moving"
         mv pyappimage*.AppImage* dist/.
         
 
