@@ -1,0 +1,4 @@
+click == 7.1.2
+halo == 0.0.29
+pyinstaller == 4.0
+https://github.com/srevinsaju/zap-cli/archive/master.zip

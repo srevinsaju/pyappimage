@@ -1,0 +1,7 @@
+{
+	"name": "PyAppImage",
+	"entrypoint": "pyappimage.cli:cli",
+	"categories": ["Development"],
+	"updateinformation": "gh-releases-zsync|srevinsaju|pyappimage|latest|PyAppImage*.AppImage.zsync",
+	"hidden-import": ["PyInstaller"]
+}
