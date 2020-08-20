@@ -1,2 +1,2 @@
 PyInstaller
-/run/media/srevinsaju/ARCH_DATA/git/pyappimage
+pyappimage
