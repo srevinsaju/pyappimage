@@ -30,6 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Build AppImage using @niess python-appimage
       run: |
+        sed -i "s,pyappimage,$(realpath .),g" appimage/requirements.txt
         python3 -m python_appimage build app appimage -p ${{ matrix.version }}
         *.AppImage --appimage-extract
         rm -r *.AppImage
