@@ -115,6 +115,11 @@ def build(force=False):
         print("Please create pyappimage.json in ./pyappimage folder or at "
               "the root directory")
         sys.exit(1)
+    if not os.path.exists("setup.py"):
+        print("Could not find setup.py in {}".format(os.getcwd()))
+        print("Make sure that the setup.py exists in the current directory, "
+              "and run this command again.")
+        sys.exit(1)
 
     build_directory = os.path.realpath("{}.AppDir.BUILD".format(name))
     dist_directory = os.path.realpath("{}.AppDir".format(name))

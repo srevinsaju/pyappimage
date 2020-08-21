@@ -30,8 +30,10 @@ import os
 import shlex
 import shutil
 import subprocess
+import sys
 import time
 
+from pathlib import Path
 from PyInstaller import __main__ as PyInstaller
 from halo import Halo
 
@@ -84,6 +86,37 @@ def get_parameters(config):
     return kwargs
 
 
+def install_packages(setup_py, build_directory):
+    if os.getenv('APPIMAGE'):
+        pip = os.getenv('PYAPPIMAGE_PIP')
+    else:
+        pip = "{python} -m pip".format(python=get_executable_path('python3'))
+    _pip_install_proc = subprocess.run(_(
+        "{pip} install --prefix={build} --ignore-installed {proj_dir}".format(
+            pip=pip,
+            build=build_directory,
+            proj_dir=os.path.dirname(setup_py)
+        )
+    ), capture_output=True)
+    log_file = os.path.join(build_directory, 'PIP.log')
+    with open(log_file, 'w') as fp:
+        fp.write("PyAppImage v{}\n".format(__version__))
+        fp.write(SEPARATOR)
+        fp.write("PIP LOGS: \n")
+        fp.write(_pip_install_proc.stdout.decode())
+        fp.write("\n\n")
+        fp.write(SEPARATOR)
+        if _pip_install_proc.stderr is not None:
+            fp.write(_pip_install_proc.stderr.decode())
+        fp.write("Build exited with {}\n".format(
+            _pip_install_proc.returncode))
+
+    _pip_install_proc.check_returncode()
+    _sp = list(Path(build_directory)
+               .glob('lib/python*/site-packages'))[0].resolve()
+    return _sp
+
+
 def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
     entrypoint = config.pop("entrypoint")
     name = config.pop('name', 'Python')
@@ -92,6 +125,10 @@ def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
                                             'PyAppImage')
     categories = config.pop('categories', [])
     updateinformation = config.pop('updateinformation')
+    setup_py = os.path.realpath('setup.py')
+    if not os.path.exists(setup_py):
+        raise FileNotFoundError("Could not find a setup.py in the current "
+                                "directory!")
 
     build_started_at = time.asctime()
     spinner = Halo("Building AppImage for {} ".format(name), spinner="dots")
@@ -110,10 +147,13 @@ def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
     with open(os.path.join(build_directory, "entrypoint.py"), 'w') as w:
         w.write(entrypoint)
 
+    site_packages = \
+        install_packages(setup_py=setup_py, build_directory=build_directory)
+
     PyInstaller.run(_(
         "{build}/entrypoint.py --log-level=WARN --strip --name={name} "
         "--onedir {kwargs} --distpath={dist} --specpath={workpath} "
-        "--workpath={workpath} "
+        "--workpath={workpath} --paths {site_packages}"
         "--noconfirm --clean".format(
             pyinstaller=get_executable_path("pyinstaller"),
             name=name,
@@ -121,7 +161,8 @@ def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
             kwargs=' '.join(get_parameters(config)),
             dist=dist_directory,
             build=build_directory,
-            workpath=_pyinstaller_workpath
+            workpath=_pyinstaller_workpath,
+            site_packages=site_packages
         )))
 
     if not os.path.exists(os.path.join(dist_directory, name, name)):
