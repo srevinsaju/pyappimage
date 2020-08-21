@@ -155,7 +155,6 @@ def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
         "--onedir {kwargs} --distpath={dist} --specpath={workpath} "
         "--workpath={workpath} --paths={site_packages} "
         "--noconfirm --clean".format(
-            pyinstaller=get_executable_path("pyinstaller"),
             name=name,
             entrypoint=entrypoint,
             kwargs=' '.join(get_parameters(config)),
