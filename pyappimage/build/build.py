@@ -153,7 +153,7 @@ def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
     PyInstaller.run(_(
         "{build}/entrypoint.py --log-level=WARN --strip --name={name} "
         "--onedir {kwargs} --distpath={dist} --specpath={workpath} "
-        "--workpath={workpath} --paths {site_packages}"
+        "--workpath={workpath} --paths={site_packages} "
         "--noconfirm --clean".format(
             pyinstaller=get_executable_path("pyinstaller"),
             name=name,
