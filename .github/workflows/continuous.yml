@@ -73,7 +73,7 @@ jobs:
         automatic_release_tag: continuous
         title: Beta AppImage Release
         prerelease: false
-        files:
+        files: |
           pyappimage-3.6-continuous-x86_64.AppImage
           pyappimage-3.7-continuous-x86_64.AppImage
           pyappimage-3.8-continuous-x86_64.AppImage
