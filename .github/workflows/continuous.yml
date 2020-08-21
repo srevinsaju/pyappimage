@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     strategy:
       matrix:
         version: ['3.6', '3.7', '3.8']
@@ -38,6 +38,7 @@ jobs:
         rm -r pyappimage-x86_64.AppImage
         wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
         chmod +x appimagetool-x86_64.AppImage
+        cp -L /opt/hostedtoolcache/Python/3.*/x64/lib/libpython*m.so squashfs-root/opt/python*/lib/.
         echo "Bundling AppImage Tool"
         ARCH=x86_64 ./appimagetool-x86_64.AppImage squashfs-root -n -u 'gh-releases-zsync|srevinsaju|pyappimage|continuous|pyappimage-${{ matrix.version }}*.AppImage.zsync' pyappimage-${{ matrix.version }}-x86_64.AppImage
         mkdir dist
