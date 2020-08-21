@@ -29,6 +29,7 @@ setup(
     },
     platforms=['Linux'],
     include_package_data=True,
+    package_data={'pyappimage': ['assets/*']},
     install_requires=['PyInstaller', 'click', 'halo'],
     dependency_links=[
         "http://github.com/srevinsaju/zap/archive/master.tar.gz"
