@@ -80,9 +80,18 @@ def get_parameters(config):
                 raise ValueError("Config contains invalid data: null")
         elif isinstance(config[key], list):
             for i in config[key]:
-                kwargs.append("--{key}={arg}".format(key=key, arg=i))
+                if '$APPDIR' in i:
+                    i_proc = i.replace('$APPDIR', os.getenv('APPDIR', ''))
+                else:
+                    i_proc = i
+                kwargs.append("--{key}={arg}".format(key=key, arg=i_proc))
         else:
-            kwargs.append("--{key}={arg}".format(key=key, arg=config[key]))
+            if '$APPDIR' in config[key]:
+                i_proc = \
+                    config[key].replace('$APPDIR', os.getenv('APPDIR', ''))
+            else:
+                i_proc = config[key]
+            kwargs.append("--{key}={arg}".format(key=key, arg=i_proc))
 
     return kwargs
 
