@@ -166,7 +166,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
         install_packages(setup_py=setup_py, build_directory=build_directory)
 
     PyInstaller.run(_(
-        "{build}/entrypoint.py --log-level=WARN --strip --name={name} "
+        "{build}/entrypoint.py --log-level=WARN --name={name} "
         "--onedir {kwargs} --distpath={dist} --specpath={workpath} "
         "--workpath={workpath} --paths={site_packages} "
         "--noconfirm --clean".format(
