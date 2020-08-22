@@ -43,6 +43,8 @@ jobs:
         [ -f /opt/hostedtoolcache/Python/3.*/x64/lib/libpython3.8.so.1.0 ] && cp -L /opt/hostedtoolcache/Python/3.*/x64/lib/libpython3.8.so.1.0 squashfs-root/usr/lib/.
         cp -L `which objdump` squashfs-root/usr/bin/.
         cp -L `which strip` squashfs-root/usr/bin/.
+        cp -L /usr/lib/x86_64-linux-gnu/libbfd-2.26.1-system.so squashfs-root/usr/lib/.
+        cp -L /usr/lib/x86_64-linux-gnu/libopcodes-2.26.1-system.so squashfs-root/usr/lib/.
         echo "Bundling AppImage Tool"
         ARCH=x86_64 ./appimagetool-x86_64.AppImage squashfs-root -n -u 'gh-releases-zsync|srevinsaju|pyappimage|continuous|pyappimage-${{ matrix.version }}*.AppImage.zsync' pyappimage-${{ matrix.version }}-x86_64.AppImage
         mkdir dist
