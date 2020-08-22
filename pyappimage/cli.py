@@ -55,6 +55,19 @@ def show_license(ctx, param, value):
     ctx.exit()
 
 
+def is_fuse_supported():
+    if os.path.exists(os.path.join('/', '.dockerenv')):
+        # detected docker
+        print("Detected Docker container")
+        return False
+    elif shutil.which('fusermount') is not None:
+        # assume fuse support
+        print("fusermount detected on host system.")
+        return True
+    else:
+        return False
+
+
 @click.group()
 @click.option('--version', is_flag=True, callback=show_version,
               expose_value=False, is_eager=True)
@@ -136,7 +149,8 @@ def build(force=False):
                 print("Aborted!")
                 sys.exit(0)
     pyappimage_build(config, appdata=appdata, icon=icon_path,
-                     desktop_file=desktop_file)
+                     desktop_file=desktop_file,
+                     has_fuse=is_fuse_supported())
     print('done!')
 
 

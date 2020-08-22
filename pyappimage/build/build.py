@@ -27,6 +27,7 @@ This file is a part of the PyAppImage Python AppImage builder
 """
 
 import os
+import platform
 import shlex
 import shutil
 import subprocess
@@ -37,7 +38,7 @@ from pathlib import Path
 from PyInstaller import __main__ as PyInstaller
 from halo import Halo
 
-from ..constants import APPRUN, DESKTOP_FILE
+from ..constants import APPRUN, DESKTOP_FILE, ENTRYPOINT
 from ..version import __version__
 from zap.zap import Zap
 _ = shlex.split
@@ -117,7 +118,7 @@ def install_packages(setup_py, build_directory):
     return _sp
 
 
-def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
+def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     entrypoint = config.pop("entrypoint")
     name = config.pop('name', 'Python')
     generic_name = config.pop('generic-name', name)
@@ -145,7 +146,12 @@ def build(config, icon, appdata=None, desktop_file=None ,has_fuse=True):
         mod=_import, func=_function)
 
     with open(os.path.join(build_directory, "entrypoint.py"), 'w') as w:
-        w.write(entrypoint)
+        w.write(ENTRYPOINT.format(
+            pyappimage_version=__version__,
+            python_runtime=sys.version.split('\n')[0],
+            platform_version=platform.platform(),
+            entrypoint=entrypoint
+        ))
 
     site_packages = \
         install_packages(setup_py=setup_py, build_directory=build_directory)

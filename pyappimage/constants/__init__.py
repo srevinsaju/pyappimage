@@ -30,3 +30,18 @@ Type=Application
 Categories={categories}
 StartupWMClass={bin}
 """
+
+
+ENTRYPOINT = \
+"""import sys
+BUILT_INFO = "{platform_version}"
+PYAPPIMAGE_VERSION = "{pyappimage_version}"
+PYTHON_RUNTIME = "{python_runtime}"
+if '--pyappimage-runtime' in sys.argv:
+    print("Built on:")
+    print(" - OS:", BUILT_INFO)
+    print(" - Python:", PYTHON_RUNTIME)
+    print("Built using:", PYAPPIMAGE_VERSION)
+    print("Python runtime:", sys.version)
+else:
+    {entrypoint}"""
