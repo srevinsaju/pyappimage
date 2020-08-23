@@ -19,6 +19,8 @@ details. Corresponding to the python version, binaries will be built, using [PyI
 * Get the latest `pyappimage.AppImage` to begin development
 
 ### PyAppImage tutorial 
+
+
 #### Packaging `appimagelint`
 
 The `appimagelint`'s documentation, tells 
@@ -108,18 +110,18 @@ So to get started
    
    But this would fail now. Because of an odd error
    ```python
-		Traceback (most recent call last):
-			File "entrypoint.py", line 12, in <module>
-			File "appimagelint/cli.py", line 91, in run
-				args = parse_args()
-			File "appimagelint/cli.py", line 47, in parse_args
-				action="version", version=get_version(),
-			File "appimagelint/cli.py", line 18, in get_version
-				version = pkg_resources.require("appimagelint")[0].version
-			File "pkg_resources/__init__.py", line 899, in require
-			File "pkg_resources/__init__.py", line 785, in resolve
-		pkg_resources.DistributionNotFound: The 'appimagelint' distribution was not found and is required by the application
-		[886] Failed to execute script entrypoint
+	Traceback (most recent call last):
+		File "entrypoint.py", line 12, in <module>
+		File "appimagelint/cli.py", line 91, in run
+			args = parse_args()
+		File "appimagelint/cli.py", line 47, in parse_args
+			action="version", version=get_version(),
+		File "appimagelint/cli.py", line 18, in get_version
+			version = pkg_resources.require("appimagelint")[0].version
+		File "pkg_resources/__init__.py", line 899, in require
+		File "pkg_resources/__init__.py", line 785, in resolve
+	pkg_resources.DistributionNotFound: The 'appimagelint' distribution was not found and is required by the application
+	[886] Failed to execute script entrypoint
 	 ```
 	 
 	 Looking at the traceback, it looks like on `appimagelint/cli.py` at line 18, appimagelint is trying to call `pkg_resources.require`, 
@@ -133,12 +135,12 @@ index e734440..5266e53 100644
 +++ b/appimagelint/cli.py
 @@ -15,7 +15,7 @@ from .checks import IconsCheck, GlibcABICheck, GlibcxxABICheck, DesktopFilesChec
 def get_version():
-			 try:
-					 import pkg_resources
-	-        version = pkg_resources.require("appimagelint")[0].version
-	+        version = '0.0.1'
-			 except ImportError:
-					 version = "unknown"
+		 try:
+				 import pkg_resources
+-        version = pkg_resources.require("appimagelint")[0].version
++        version = '0.0.1'
+		 except ImportError:
+				 version = "unknown"
  ```
 9. Try the build again to see if it works
    ```bash
@@ -160,20 +162,17 @@ This is because Tcl and Tkinter are bundled in a different directory. To add the
 
 ```json
 {
-			"name": "appimagelint",
-			"entrypoint": "appimagelint.cli:run",
-			"categories": ["Utility"],
-			"updateinformation": "gh-releases-zsync|srevinsaju|appimagelint|latest|appimagelint*.AppImage.zsync",
-			"add-data": ["$APPDIR/usr/share/tcltk/tk8.4:tk", "$APPDIR/usr/share/tcltk/tcl8.4:tcl"],
+	"name": "appimagelint",
+	"entrypoint": "appimagelint.cli:run",
+	"categories": ["Utility"],
+	"updateinformation": "gh-releases-zsync|srevinsaju|appimagelint|latest|appimagelint*.AppImage.zsync",
+	"add-data": ["$APPDIR/usr/share/tcltk/tk8.4:tk", "$APPDIR/usr/share/tcltk/tcl8.4:tcl"],
 }
 ```
-	I added the folders for tk and tcl from their respective folders. You could append $APPDIR to add a folder from the `pyappimage-*.AppImage` to your compiled appimage. Or use absolute path, to copy from your host OS to the appimage.
+I added the folders for tk and tcl from their respective folders. You could append $APPDIR to add a folder from the `pyappimage-*.AppImage` to your compiled appimage. Or use absolute path, to copy from your host OS to the appimage.
 	
 11. Now run it again, And :tada: it works without errors now!
 	
-	  
-		
-	
-	
 
-   
+
+
