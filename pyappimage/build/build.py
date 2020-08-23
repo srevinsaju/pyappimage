@@ -134,6 +134,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     description = config.pop('description', 'Python app generated using '
                                             'PyAppImage')
     categories = config.pop('categories', [])
+    pyappimage_data = config.pop('pyappimage_data', None)
     updateinformation = config.pop('updateinformation')
     setup_py = os.path.realpath('setup.py')
     if not os.path.exists(setup_py):
@@ -212,6 +213,18 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
             os.path.join(dist_directory, '{}.desktop'.format(name)),
             follow_symlinks=True
         )
+
+    if pyappimage_data is not None:
+        for data in pyappimage_data:
+            src, dest = data.split(':')
+            src_data = os.path.realpath(src)
+            dest_folder = \
+                os.path.realpath(dest.replace('$APPIMAGE', dist_directory))
+            if os.path.isdir(src_data):
+                shutil.copytree(src_data, dest_folder, symlinks=True,
+                                dirs_exist_ok=True)
+            else:
+                shutil.copy(src_data, dest_folder, follow_symlinks=True)
 
     spinner.start("Downloading appimagetool")
     appimagetool = Zap("appimagetool")
