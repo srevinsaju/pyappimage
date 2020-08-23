@@ -135,6 +135,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
                                             'PyAppImage')
     categories = config.pop('categories', [])
     pyappimage_data = config.pop('pyappimage_data', None)
+    environment_vars = config.pop('environment_vars', None)
     updateinformation = config.pop('updateinformation')
     setup_py = os.path.realpath('setup.py')
     if not os.path.exists(setup_py):
@@ -226,6 +227,11 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
             else:
                 shutil.copy(src_data, dest_folder, follow_symlinks=True)
 
+    env_vars = []
+    if environment_vars is not None:
+        for var in environment_vars:
+            env_vars.append('export {}={}'.format(var, environment_vars[var]))
+
     spinner.start("Downloading appimagetool")
     appimagetool = Zap("appimagetool")
     appimagetool.install(select_default=True, tag_name="continuous",
@@ -239,7 +245,11 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     path_to_apprun = os.path.join(dist_directory, 'AppRun')
     with open(path_to_apprun, 'w') as w:
         w.write(APPRUN)
-        w.write("${APPDIR}/" + name + "/" + name + " $@")
+        w.write('\n'.join(env_vars))  # add the environment variables
+        w.write("${APPDIR}/" + name + "/" + name + " $@")  # add the binary
+        # entrypoint
+
+    # chmod the apprun on 755
     os.chmod(path_to_apprun, 0o755)
 
     _libz = os.path.join(dist_directory, name, 'libz.so.1')
