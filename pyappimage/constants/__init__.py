@@ -19,6 +19,8 @@ then
 fi
 """
 
+SEPARATOR = "\n========================\n"
+
 DESKTOP_FILE = \
     """[Desktop Entry]
 Name={generic_name}

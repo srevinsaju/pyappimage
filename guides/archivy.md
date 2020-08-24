@@ -10,14 +10,13 @@ git clone https://github.com/Uzay-G/archivy
 cd archivy
 ```
 
-3. Add a `pyappimage/pyappimage.json`. this file is a configuration file for PyAppImage to know what to build, etc.
-```json
-{
-  "name": "archivy",
-  "categories": ["Utility"],
-  "entrypoint": "archivy.run:main",
-  "updateinformation": "gh-releases-zsync|Uzay-G|archivy|latest|archivy*.AppImage.zsync",
-}
+3. Add a `pyappimage/pyappimage.yml`. this file is a configuration file for PyAppImage to know what to build, etc.
+```yml
+name: archivy
+entrypoint: archivy.run:main
+categories:
+  - Utility
+updateinformation: gh-releases-zsync|Uzay-G|archivy|latest|archivy*.AppImage.zsync
 ```
 3. Build the AppImage by downloading and running `pyappimage-*.AppImage`
 ```bash
@@ -40,14 +39,15 @@ Wow! It loads the flask server!
 
 Let's open the link 0.0.0.0. But, now it raises a Jinja2 Template Error. This is because the `static`, `template` and `assets` directory is not copied to the AppImage directly. Pyappimage only converts static Python source code to binaries. So you have to selectively add them to the `pyappimage/pyappimage.json`
 
-```json
-{
-        "name": "archivy",
-        "entrypoint": "archivy.run:main",
-        "categories": ["Utility"],
-        "updateinformation": "gh-releases-zsync|srevinsaju|archivy|latest|appimagelint*.AppImage.zsync",
-        "pyappimage_data": ["$CWD/archivy/static:$APPIMAGE/static", "$CWD/archivy/templates:$APPIMAGE/templates", "/root/git/archivy/assets:$APPIMAGE/assets"]
-}
+```yml
+name: archivy
+entrypoint: archivy.run:main
+categories:
+  - Utility
+updateinformation: gh-releases-zsync|Uzay-G|archivy|latest|archivy*.AppImage.zsync
+data:
+  $CWD/archivy/static: $APPIMAGE/static
+  $CWD/archivy/templates: $APPIMAGE/templates
 ```
 
 `pyappimage_data` is a json configuration data, which copies the data from `$CWD` , which is the abbreviation for Current Working Directory to the `$APPIMAGE` which is the AppImage directory, before it is compiled to a standalone AppImage. But, Flask still doesn't know where to search for the `templates` and `static` folder. So you have to manually instruct `Flask` to load `templates` and `static` from their APPIMAGE folder directory.
@@ -79,17 +79,18 @@ index 3a8575e..bc3c819 100644
 
 See, the `app = Flask(__name__)` was replaced to provide the `template_folder` and `static_folder` paths. `$APPDIR` is an environment variable which is defined when an appimage is run. It points to the root of the Squash Fuse File System. Alternatively, its also possible to provide environment variables in the json file. 
 
-```json
-{
-        "name": "archivy",
-        "entrypoint": "archivy.run:main",
-        "categories": ["Utility"],
-        "updateinformation": "gh-releases-zsync|srevinsaju|archivy|latest|appimagelint*.AppImage.zsync",
-        "environment_vars": {
-            "LD_LIBRARY_PATH": "/path/to/something",
-            "ARCHIVY_TEMPLATE_DIR": "$APPDIR/templates"
-        }
-}
+```yml
+name: archivy
+entrypoint: archivy.run:main
+categories:
+  - Utility
+updateinformation: gh-releases-zsync|Uzay-G|archivy|latest|archivy*.AppImage.zsync
+data:
+  $CWD/archivy/static: $APPIMAGE/static
+environment: 
+  LD_LIBRARY_PATH: /path/to/something
+  ARCHIVY_TEMPLATE_DIR: $APPDIR/templates
+
 ```
 
 And you are done!

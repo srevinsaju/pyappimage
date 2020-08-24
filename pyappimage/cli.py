@@ -27,7 +27,6 @@ This file is a part of the PyAppImage Python AppImage builder
 """
 
 
-import json
 import os
 import shutil
 import sys
@@ -36,6 +35,12 @@ import click
 from .version import __version__
 from . import __doc__ as lic
 from .build.build import build as pyappimage_build
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+import yaml
 
 
 def show_version(ctx, param, value):
@@ -87,10 +92,10 @@ def build(force=False):
     """Build an Python AppImage"""
     for path in ('.', 'pyappimage'):
         if os.path.isdir(os.path.realpath(path)):
-            pyappimage_json = os.path.join(path, 'pyappimage.json')
-            if os.path.exists(pyappimage_json):
-                with open(pyappimage_json, 'r') as r:
-                    config = json.load(r)
+            pyappimage_yml = os.path.join(path, 'pyappimage.yml')
+            if os.path.exists(pyappimage_yml):
+                with open(pyappimage_yml, 'r') as r:
+                    config = yaml.load(r, Loader=Loader)
                 name = config.get('name')
                 for image_type in ('png', 'svg'):
                     _icon = os.path.join(path, '{appname}.{type}'.format(
@@ -124,8 +129,8 @@ def build(force=False):
                     desktop_file = None
                 break
     else:
-        print("Could not find a valid pyappimage.json")
-        print("Please create pyappimage.json in ./pyappimage folder or at "
+        print("Could not find a valid pyappimage.yml")
+        print("Please create pyappimage.yml in ./pyappimage folder or at "
               "the root directory")
         sys.exit(1)
     if not os.path.exists("setup.py"):

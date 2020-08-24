@@ -38,12 +38,11 @@ from pathlib import Path
 from PyInstaller import __main__ as PyInstaller
 from halo import Halo
 
-from ..constants import APPRUN, DESKTOP_FILE, ENTRYPOINT
+from ..constants import APPRUN, DESKTOP_FILE, ENTRYPOINT, SEPARATOR
+from ..utils import replace_vars
 from ..version import __version__
 from zap.zap import Zap
 _ = shlex.split
-
-SEPARATOR = "\n========================\n"
 
 
 def get_executable_path(executable, raise_error=True):
@@ -68,7 +67,7 @@ def get_executable_path(executable, raise_error=True):
         return False
 
 
-def get_parameters(config):
+def get_parameters(config, _vars):
 
     kwargs = []
     _ = config.pop("distpath", None)  # to prevent overriding the dist path
@@ -81,14 +80,13 @@ def get_parameters(config):
         elif isinstance(config[key], list):
             for i in config[key]:
                 if '$APPDIR' in i:
-                    i_proc = i.replace('$APPDIR', os.getenv('APPDIR', ''))
+                    i_proc = replace_vars(i, _vars)
                 else:
                     i_proc = i
                 kwargs.append("--{key}={arg}".format(key=key, arg=i_proc))
         else:
             if '$APPDIR' in config[key]:
-                i_proc = \
-                    config[key].replace('$APPDIR', os.getenv('APPDIR', ''))
+                i_proc = replace_vars(config[key], _vars)
             else:
                 i_proc = config[key]
             kwargs.append("--{key}={arg}".format(key=key, arg=i_proc))
@@ -134,8 +132,8 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     description = config.pop('description', 'Python app generated using '
                                             'PyAppImage')
     categories = config.pop('categories', [])
-    pyappimage_data = config.pop('pyappimage_data', None)
-    environment_vars = config.pop('environment_vars', None)
+    pyappimage_data = config.pop('data', None)
+    environment_vars = config.pop('environment', None)
     updateinformation = config.pop('updateinformation')
     setup_py = os.path.realpath('setup.py')
     if not os.path.exists(setup_py):
@@ -147,6 +145,16 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     spinner.start()
     build_directory = os.path.realpath("{}.AppDir.BUILD".format(name))
     dist_directory = os.path.realpath("{}.AppDir".format(name))
+
+    # internal function to generate_vars
+    _vars = {
+        "APPDIR": os.getenv('APPDIR', ''),
+        "BUILD": build_directory,
+        "CWD": os.getcwd(),
+        "ROOT": os.path.realpath('/'),
+        "APPIMAGE": dist_directory
+    }
+
     _pyinstaller_workpath = os.path.join(build_directory, 'build')
     for i in (build_directory, dist_directory, _pyinstaller_workpath):
         if not os.path.exists(i):
@@ -174,7 +182,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
         "--noconfirm --clean".format(
             name=name,
             entrypoint=entrypoint,
-            kwargs=' '.join(get_parameters(config)),
+            kwargs=' '.join(get_parameters(config, _vars)),
             dist=dist_directory,
             build=build_directory,
             workpath=_pyinstaller_workpath,
@@ -216,11 +224,12 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
         )
 
     if pyappimage_data is not None:
-        for data in pyappimage_data:
-            src, dest = data.split(':')
-            src_data = os.path.realpath(src.replace('$CWD', os.getcwd()))
-            dest_folder = \
-                os.path.realpath(dest.replace('$APPIMAGE', dist_directory))
+        for src in pyappimage_data:
+            dest = pyappimage_data[src]
+            src_fmt = replace_vars(src, _vars)
+            dest_fmt = replace_vars(dest, _vars)
+            src_data = os.path.realpath(src_fmt)
+            dest_folder = os.path.realpath(dest_fmt)
             os.makedirs(dest_folder, exist_ok=True)
             if os.path.isdir(src_data):
 
