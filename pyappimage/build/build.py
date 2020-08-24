@@ -257,7 +257,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     with open(path_to_apprun, 'w') as w:
         w.write(APPRUN)
         w.write('\n'.join(env_vars))  # add the environment variables
-        w.write("${APPDIR}/" + name + "/" + name + " $@")  # add the binary
+        w.write("\n${APPDIR}/" + name + "/" + name + " $@")  # add the binary
         # entrypoint
 
     # chmod the apprun on 755
