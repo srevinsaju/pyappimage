@@ -16,7 +16,6 @@
 ![GitHub followers](https://img.shields.io/github/followers/srevinsaju?label=Follow%20me&style=social) ![GitHub stars](https://img.shields.io/github/stars/srevinsaju/zap?style=social)
 </div>
 
-
 ## Getting Started
 > The project is still in beta. Consider reporting bugs to help development and release a stable version;
 
