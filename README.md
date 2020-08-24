@@ -9,7 +9,7 @@
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)<br/><br/>
 
-![Continuous](https://github.com/srevinsaju/pyappimage/workflows/Continuous/badge.svg) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/srevinsaju/pyappimage) ![GitHub](https://img.shields.io/github/license/srevinsaju/pyappimage) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/srevinsaju/pyappimage?sort=semver) [![irc](https://img.shields.io/badge/IRC-%23AppImage%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=AppImage) 
+![Python application](https://github.com/srevinsaju/pyappimage/workflows/Python%20application/badge.svg) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/srevinsaju/pyappimage) ![GitHub](https://img.shields.io/github/license/srevinsaju/pyappimage) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/srevinsaju/pyappimage?sort=semver) [![irc](https://img.shields.io/badge/IRC-%23AppImage%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=AppImage) 
 
 [![Mentioned in Awesome AppImage](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/AppImage/awesome-appimage)
 
