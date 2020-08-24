@@ -218,10 +218,12 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     if pyappimage_data is not None:
         for data in pyappimage_data:
             src, dest = data.split(':')
-            src_data = os.path.realpath(src)
+            src_data = os.path.realpath(src.replace('$CWD', os.getcwd()))
             dest_folder = \
                 os.path.realpath(dest.replace('$APPIMAGE', dist_directory))
+            os.makedirs(dest_folder, exist_ok=True)
             if os.path.isdir(src_data):
+
                 shutil.copytree(src_data, dest_folder, symlinks=True,
                                 dirs_exist_ok=True)
             else:
