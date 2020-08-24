@@ -55,12 +55,12 @@ here, the function located in `script` file, of which the script file is
 
 #### `environment_vars`
 
-Environment variables can be set before the appimage entrypoint is called. This can be useful in defining AppImage based variables or conditionally executing some functions when the app is being run within an appimage, 
+Environment variables can be set before the appimage entrypoint is called. 
+This can be useful in defining AppImage based variables or conditionally executing some functions when the app is being run within an appimage, 
 
-```
-"environment_vars": {
-	"HELLO": "TEST"
-}
+```yml
+environment: 
+	HELLO: TEST
 ```
 
 This will be translated to 
@@ -76,7 +76,9 @@ export HELLO=TEST
 These are `data` objects, including items like `png`, `json`, `txt` items which you would like to place in the AppImage. Just simple add
 
 ```
-"pyappimage_data": ["$CWD/somefile/photo.png:$APPIMAGE/photo.png", "/usr/share/icons/myphoto.svg:$APPIMAGE/icons/icon.png"]
+data: 
+	$CWD/somefile/photo.png: $APPIMAGE/photo.png
+	/usr/share/icons/myphoto.svg: $APPIMAGE/icons/icon.png
 ```
 
 <br>
