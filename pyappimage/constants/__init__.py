@@ -5,7 +5,6 @@ self="$(readlink -f -- $0)"
 here="${self%/*}"
 APPDIR="${APPDIR:-${here}}"
 
-export LD_LIBRARY_PATH="$APPDIR:${APPDIR}/usr/lib:${APPDIR}/usr/local/lib:${LD_LIBRARY_PATH}"
 export PYAPPIMAGE="TRUE"
 
 if [ -z "$LC_ALL" ]
