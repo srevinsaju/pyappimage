@@ -93,6 +93,35 @@ def get_parameters(config, _vars):
 
     return kwargs
 
+def install_additional_requirements(requirements, build_directory):
+    if os.getenv('APPIMAGE'):
+        pip = os.getenv('PYAPPIMAGE_PIP')
+    else:
+        pip = "{python} -m pip".format(python=get_executable_path('python3'))
+
+    _pip_install_proc = subprocess.run(_(
+        "{pip} install --process-dependency-links "
+        "--prefix={build} --ignore-installed {req}".format(
+            pip=pip,
+            build=build_directory,
+            req=' '.join(requirements)
+        )
+    ), capture_output=True)
+    log_file = os.path.join(build_directory, 'PIP_REQ.log')
+    with open(log_file, 'w') as fp:
+        fp.write("PyAppImage v{}\n".format(__version__))
+        fp.write(SEPARATOR)
+        fp.write("PIP LOGS: \n")
+        fp.write(_pip_install_proc.stdout.decode())
+        fp.write("\n\n")
+        fp.write(SEPARATOR)
+        if _pip_install_proc.stderr is not None:
+            fp.write(_pip_install_proc.stderr.decode())
+        fp.write("Build exited with {}\n".format(
+            _pip_install_proc.returncode))
+
+    _pip_install_proc.check_returncode()
+
 
 def install_packages(setup_py, build_directory):
     if os.getenv('APPIMAGE'):
@@ -133,6 +162,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     description = config.pop('description', 'Python app generated using '
                                             'PyAppImage')
     categories = config.pop('categories', [])
+    requirements = config.pop('requirements', [])
     pyappimage_data = config.pop('data', None)
     environment_vars = config.pop('environment', None)
     updateinformation = config.pop('updateinformation')
@@ -175,6 +205,9 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
 
     site_packages = \
         install_packages(setup_py=setup_py, build_directory=build_directory)
+    
+    if len(requirements) >= 1:
+        install_additional_requirements(requirements, build_directory)
 
     PyInstaller.run(_(
         "{build}/entrypoint.py --log-level=WARN --name={name} "
