@@ -100,8 +100,7 @@ def install_additional_requirements(requirements, build_directory):
         pip = "{python} -m pip".format(python=get_executable_path('python3'))
 
     _pip_install_proc = subprocess.run(_(
-        "{pip} install --process-dependency-links "
-        "--prefix={build} --ignore-installed {req}".format(
+        "{pip} install --prefix={build} --ignore-installed {req}".format(
             pip=pip,
             build=build_directory,
             req=' '.join(requirements)
