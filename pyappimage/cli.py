@@ -150,7 +150,7 @@ def build(force=False):
                                .format(dir))
             if cf:
                 shutil.rmtree(dir)
-            else:
+            elif dir != build_directory:
                 print("Aborted!")
                 sys.exit(0)
     pyappimage_build(config, appdata=appdata, icon=icon_path,
