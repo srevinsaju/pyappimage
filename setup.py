@@ -1,5 +1,5 @@
 import os
-from zap import __version__
+from pyappimage.version import __version__
 from setuptools import find_packages
 from setuptools import setup
 
