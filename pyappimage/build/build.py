@@ -128,7 +128,7 @@ def install_packages(setup_py, build_directory):
     else:
         pip = "{python} -m pip".format(python=get_executable_path('python3'))
     _pip_install_proc = subprocess.run(_(
-        "{pip} install --prefix={build} --ignore-installed {proj_dir}".format(
+        "{pip} install --prefix={build} {proj_dir}".format(
             pip=pip,
             build=build_directory,
             proj_dir=os.path.dirname(setup_py)
