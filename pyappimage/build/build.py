@@ -159,6 +159,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     generic_name = config.pop('generic-name', name)
     description = config.pop('description', 'Python app generated using '
                                             'PyAppImage')
+    ignored_binaries = config.pop('ignore-binaries', [])
     categories = config.pop('categories', [])
     requirements = config.pop('requirements', [])
     pyappimage_data = config.pop('data', None)
@@ -298,6 +299,12 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     _libz = os.path.join(dist_directory, name, 'libz.so.1')
     if os.path.exists(_libz):
         os.remove(_libz)
+
+    _libs_path = os.path.join(dist_directory, name)
+    for lib in ignored_binaries:
+        for i in Path(_libs_path).glob(lib):
+            print("Unlinking {}".format(i))
+            i.unlink(missing_ok=True)
 
     spinner.start("Building AppImage")
 
