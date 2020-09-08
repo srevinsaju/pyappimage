@@ -7,15 +7,6 @@ APPDIR="${APPDIR:-${here}}"
 
 export PYAPPIMAGE="TRUE"
 
-if [ -z "$LC_ALL" ]
-then 
-        export LC_ALL=C.UTF-8
-fi
-
-if [ -z "$LANG" ]
-then
-        export LANG=C.UTF-8
-fi
 """
 
 SEPARATOR = "\n========================\n"
