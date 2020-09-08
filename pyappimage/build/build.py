@@ -302,6 +302,10 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
 
     _libs_path = os.path.join(dist_directory, name)
     for lib in ignored_binaries:
+        lib_path = os.path.join(_libs_path, lib)
+        if os.path.exists(lib_path) and os.path.isdir(lib_path):
+            shutil.rmtree(lib_path)
+
         for i in Path(_libs_path).glob(lib):
             print("Unlinking {}".format(i))
             i.unlink(missing_ok=True)
