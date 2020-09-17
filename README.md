@@ -147,3 +147,5 @@ SOFTWARE.
 ## Copyright
 (c) Srevin Saju 2020
 
+PyAppImage logo is a remix of the [Papirus Icon Theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme).
+
