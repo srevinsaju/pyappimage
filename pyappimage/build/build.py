@@ -164,7 +164,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     requirements = config.pop('requirements', [])
     pyappimage_data = config.pop('data', None)
     environment_vars = config.pop('environment', None)
-    updateinformation = config.pop('updateinformation')
+    updateinformation = config.pop('updateinformation', None)
     setup_py = os.path.realpath('setup.py')
     if not os.path.exists(setup_py):
         raise FileNotFoundError("Could not find a setup.py in the current "
@@ -322,7 +322,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
             appimagetool=path_to_appimagetool,
             fuse_arguments=fuse_arguments,
             update="-u {}".format(updateinformation)
-            if updateinformation else "",
+            if updateinformation else "-g",
             SRC=dist_directory,
             DEST=dest_appimage_output_name,
         )),
