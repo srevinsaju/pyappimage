@@ -36,6 +36,7 @@ jobs:
         ls
         chmod +x pyappimage-x86_64.AppImage
         ./pyappimage-x86_64.AppImage --appimage-extract
+        ls squashfs-root/usr/bin -al
         rm -r pyappimage-x86_64.AppImage
         wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
         chmod +x appimagetool-x86_64.AppImage
