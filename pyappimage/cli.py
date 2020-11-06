@@ -35,6 +35,7 @@ import click
 from .version import __version__
 from . import __doc__ as lic
 from .build.build import build as pyappimage_build
+from .utils import get_input_else_default, verify_bundle_id, verify_categories, verify_entrypoint
 
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -82,6 +83,58 @@ def cli():
     """ PyAppImage: A command line interface to create Python AppImages"""
 
     pass
+
+
+@cli.command()
+def generate():
+    try:
+        os.mkdir("pyappimage")
+    except FileExistsError:
+        print("`pyappimage` directory already exists!")
+
+    name = get_input_else_default(
+        default="hello_world",
+        description="Enter the name of your AppImage",
+        _type=str
+    )
+    bundle_id = get_input_else_default(
+        default=f"com.example.{'_'.join(name.lower().split())}",
+        description="Enter your AppImage's bundle id",
+        _type=str,
+        verify=verify_bundle_id
+    )
+    categories = get_input_else_default(
+        default="Utility",
+        description="Enter the category to which your appimage belongs to",
+        _type=str,
+        verify=verify_categories
+    ).split(';')
+    entrypoint = get_input_else_default(
+        default=f"{bundle_id.split('.')[-1]}.__main__:main",
+        description="Enter your python application's console entrypoint",
+        _type=str,
+        verify=verify_entrypoint
+    )
+    icon = get_input_else_default(
+        default=os.path.join(os.path.dirname(__file__), 'assets', 'pyappimage.png'),
+        description="Enter the path to your logo",
+        _type=str,
+        verify=os.path.exists
+    )
+    pyappimage_yml = os.path.join("pyappimage", 'pyappimage.yml')
+    _data = {
+        "name": name,
+        "bundle_id": bundle_id,
+        "entrypoint": entrypoint,
+        "categories": categories,
+    }
+    with open(pyappimage_yml, 'w') as fp:
+        yaml.dump(_data, fp)
+    print(yaml.dump(_data))
+    print()
+    print("Copying icons")
+    shutil.copy2(icon, 'pyappimage', follow_symlinks=True)
+    print(f"Written to {pyappimage_yml}.")
 
 
 @cli.command()
