@@ -185,6 +185,8 @@ def build(force=False):
         print("Could not find a valid pyappimage.yml")
         print("Please create pyappimage.yml in ./pyappimage folder or at "
               "the root directory")
+        print("\nAlternatively, interactively generate a pyappimage file by:")
+        print("\n\t $ pyappimage generate\n")
         sys.exit(1)
     if not os.path.exists("setup.py"):
         print("Could not find setup.py in {}".format(os.getcwd()))
