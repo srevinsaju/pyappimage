@@ -11,6 +11,22 @@ export PYAPPIMAGE="TRUE"
 
 SEPARATOR = "\n========================\n"
 
+CATEGORIES = [
+    'AudioVideo',
+    'Audio',
+    'Video',
+    'Development',
+    'Education',
+    'Game',
+    'Graphics',
+    'Network',
+    'Office',
+    'Science',
+    'Settings',
+    'System',
+    'Utility'
+]
+
 DESKTOP_FILE = \
     """[Desktop Entry]
 Name={generic_name}

@@ -156,6 +156,7 @@ def install_packages(setup_py, build_directory):
 def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     entrypoint = config.pop("entrypoint")
     name = config.pop('name', 'Python')
+    bundle_id = config.pop('bundle_id', 'x.x.x')
     generic_name = config.pop('generic-name', name)
     description = config.pop('description', 'Python app generated using '
                                             'PyAppImage')
