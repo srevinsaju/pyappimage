@@ -41,7 +41,6 @@ from halo import Halo
 from ..constants import APPRUN, DESKTOP_FILE, ENTRYPOINT, SEPARATOR
 from ..utils import replace_vars
 from ..version import __version__
-from zap.zap import Zap
 _ = shlex.split
 
 
@@ -281,14 +280,6 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
         for var in environment_vars:
             env_vars.append('export {}={}'.format(var, environment_vars[var]))
 
-    spinner.start("Downloading appimagetool")
-    appimagetool = Zap("appimagetool")
-    appimagetool.install(select_default=True, tag_name="continuous",
-                         always_proceed=True)
-    path_to_appimagetool = appimagetool.appdata().get('path')
-    fuse_arguments = "--appimage-extract-and-run" if not has_fuse else ""
-    spinner.succeed("AppImageTool download succeeded!")
-
     # writing Entrypoint
     spinner.info("Writing AppRun appimagetool")
     path_to_apprun = os.path.join(dist_directory, 'AppRun')
@@ -317,50 +308,6 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
 
     spinner.start("Building AppImage")
 
-    dest_appimage_output_name = "{name}-{machine}.AppImage".format(
-        name=name,
-        machine=os.uname().machine
-    )
-
-    _build_appimage_process = subprocess.Popen(_(
-        "{appimagetool} {fuse_arguments} {update} {SRC} {DEST}".format(
-            appimagetool=path_to_appimagetool,
-            fuse_arguments=fuse_arguments,
-            update="-u {}".format(updateinformation)
-            if updateinformation else "-g",
-            SRC=dist_directory,
-            DEST=dest_appimage_output_name,
-        )),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
-
-    _build_appimage_process_exit_code = _build_appimage_process.wait()
-    _build_appimage_process_out, _build_appimage_process_err = \
-        _build_appimage_process.communicate()
-
-    log_file = os.path.join(build_directory, 'DIST.log')
-
-    with open(log_file, 'w') as fp:
-        fp.write("PyAppImage v{}\n".format(__version__))
-        fp.write("Build started at {}\n".format(build_started_at))
-        fp.write(SEPARATOR)
-        fp.write("BUILD LOGS\n")
-        fp.write(_build_appimage_process_out.decode())
-        fp.write("\n\n")
-        fp.write(SEPARATOR)
-        fp.write(_build_appimage_process_err.decode())
-        fp.write("Build exited with {}\n".format(
-            _build_appimage_process_exit_code))
-
-    if _build_appimage_process_exit_code != 0:
-        spinner.fail("Packing failed")
-        spinner.info("Check {} for build logs.".format(log_file))
-        spinner.stop()
-        return
-
     spinner.succeed("PyAppImage Succeeded.")
-    spinner.succeed("Successfully built {} as {}".format(
-        name, dest_appimage_output_name))
     spinner.stop()
     return
