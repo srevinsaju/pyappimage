@@ -188,9 +188,9 @@ def build(force=False):
         print("\nAlternatively, interactively generate a pyappimage file by:")
         print("\n\t $ pyappimage generate\n")
         sys.exit(1)
-    if not os.path.exists("setup.py"):
-        print("Could not find setup.py in {}".format(os.getcwd()))
-        print("Make sure that the setup.py exists in the current directory, "
+    if not os.path.exists("setup.py") and not os.path.exists("pyproject.toml"):
+        print("Could not find setup.py or pyproject.toml in {}".format(os.getcwd()))
+        print("Make sure that the setup.py or pyproject.toml exists in the current directory, "
               "and run this command again.")
         sys.exit(1)
 
