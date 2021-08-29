@@ -122,7 +122,7 @@ def install_additional_requirements(requirements, build_directory):
     _pip_install_proc.check_returncode()
 
 
-def install_packages(setup_py, build_directory):
+def install_packages(project_spec, build_directory):
     if os.getenv('APPIMAGE'):
         pip = os.getenv('PYAPPIMAGE_PIP')
     else:
@@ -131,7 +131,7 @@ def install_packages(setup_py, build_directory):
         "{pip} install --prefix={build} {proj_dir}".format(
             pip=pip,
             build=build_directory,
-            proj_dir=os.path.dirname(setup_py)
+            proj_dir=os.path.dirname(project_spec)
         )
     ), capture_output=True)
     log_file = os.path.join(build_directory, 'PIP.log')
@@ -167,8 +167,12 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
     environment_vars = config.pop('environment', None)
     updateinformation = config.pop('updateinformation', None)
     setup_py = os.path.realpath('setup.py')
-    if not os.path.exists(setup_py):
-        raise FileNotFoundError("Could not find a setup.py in the current "
+    if os.path.exists(os.path.realpath('setup.py')):
+        project_spec = os.path.realpath('setup.py')
+    elif os.path.exists(os.path.realpath('pyproject.toml')):
+        project_spec = os.path.realpath('pyproject.toml')
+    else:
+        raise FileNotFoundError("Could not find a setup.py or pyproject.toml in the current "
                                 "directory!")
 
     build_started_at = time.asctime()
@@ -204,7 +208,7 @@ def build(config, icon, appdata=None, desktop_file=None, has_fuse=True):
         ))
 
     site_packages = \
-        install_packages(setup_py=setup_py, build_directory=build_directory)
+        install_packages(project_spec=project_spec, build_directory=build_directory)
     
     if len(requirements) >= 1:
         install_additional_requirements(requirements, build_directory)
