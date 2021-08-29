@@ -1,4 +1,3 @@
-
 import os
 import platform
 import sys
@@ -16,7 +15,7 @@ def replace_vars(string, vars):
 
 
 def verify_categories(data):
-    for category in data.split(';'):
+    for category in data.split(";"):
         if category not in CATEGORIES:
             print(category, "is not a valid 'category'")
             return False
@@ -24,7 +23,7 @@ def verify_categories(data):
 
 
 def verify_bundle_id(data):
-    if '.' in data:
+    if "." in data:
         return True
     return False
 
