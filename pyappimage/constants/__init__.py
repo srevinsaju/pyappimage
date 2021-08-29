@@ -12,23 +12,22 @@ export PYAPPIMAGE="TRUE"
 SEPARATOR = "\n========================\n"
 
 CATEGORIES = [
-    'AudioVideo',
-    'Audio',
-    'Video',
-    'Development',
-    'Education',
-    'Game',
-    'Graphics',
-    'Network',
-    'Office',
-    'Science',
-    'Settings',
-    'System',
-    'Utility'
+    "AudioVideo",
+    "Audio",
+    "Video",
+    "Development",
+    "Education",
+    "Game",
+    "Graphics",
+    "Network",
+    "Office",
+    "Science",
+    "Settings",
+    "System",
+    "Utility",
 ]
 
-DESKTOP_FILE = \
-    """[Desktop Entry]
+DESKTOP_FILE = """[Desktop Entry]
 Name={generic_name}
 GenericName={bin}
 Comment={comment}
@@ -40,8 +39,7 @@ StartupWMClass={bin}
 """
 
 
-ENTRYPOINT = \
-"""import sys
+ENTRYPOINT = """import sys
 BUILT_INFO = "{platform_version}"
 PYAPPIMAGE_VERSION = "{pyappimage_version}"
 PYTHON_RUNTIME = "{python_runtime}"
