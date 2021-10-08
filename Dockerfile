@@ -1,4 +1,4 @@
-FROM python:buster
+FROM python:3.9-buster
 
 RUN mkdir /src
 WORKDIR /src
